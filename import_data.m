@@ -29,7 +29,7 @@ table(categories(states_cat), countcats(states_cat),'VariableNames',{'State','Tr
 %% Train Model
 % It may be a good idea to look through the data to see which states
 % actually are keeping track of our predictor variables.
-state = 'AZ'
+state = 'IN'
 data(~ismember(data{:,"state"},{state}),:) = [];
 data = data(:, features);
 % either set n < height(data) for prototyping or

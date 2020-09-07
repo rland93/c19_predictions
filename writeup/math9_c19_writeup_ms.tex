@@ -5,16 +5,54 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{algorithm}
 \usepackage{cleveref}
+
+\usepackage[]{biblatex}
+\addbibresource{math9_c19_writeup_ms.bib}
+
 \author{Mike Sutherland}
 \title{COVID-19 Modeling With Gaussian Process Regression}
 \begin{document}
 	\section{Introduction}
 	\section{Modeling}
 		\subsection{Data Preprocessing}
-		\par Data is taken from the Covid Tracking Project \cref{}
+		\par Data is taken from the Covid Tracking Project \cite{covidtracking}, which is updated once per day. First, we add a column which takes the date formatted as \texttt{YYYYMMDD} and converts it to \texttt{datetime} format. Then we, find the minimum date in the dataset and find the difference in days between each row and that minimum date. That becomes our "days since start" category.
+		
+		\par Covid Tracking Project assigns grade labels to the data, with A+ being high quality data, B being lower quality, etc. We prune all data which is not 'A+'.
+		
+		\par We look at the these features to model subsequent deaths: days since start, positive case increase, death increase, currently hospitalized, hospitalized increase, currently on ventilator, and in ICU currently. We remove all rows which do not contain all of these predictive features, and keep only these columns. Finally, we list each state and its number of row records after pruning. 
+		
+		\par A model is created for each state, because it's unlikely that e.g. the number of hospitalizations in New York would be useful in predicting the number of subsequent deaths in Colorado. Because some states do not provide detailed accounting of predictive features, we allow the user to choose which states to model, bearing in mind that states which don't provide detailed predictive feature data will result in a less accurate model.
+		
+		\par Thus the data which is provided to the model is:
+		
+		\begin{table}[h]
+		
+		\begin{center}
+		\begin{tabular}{lc}
+			\hline
+			Feature & Type \\
+			\hline
+			Days Since Start & int \\
+			Positive Increase  & int \\
+			Death Increase & int \\
+			Hospitalized Currently & int \\
+			Hospitalized Increase & int \\
+			On Ventilator Currently & int \\
+			In ICU Currently & int \\
+			\hline
+		\end{tabular}
+		\end{center}
+		\caption{Prediction Features}
+		\label{table:features}
+		\end{table}
+		
+
 		\subsection{Inputs and Outputs}
+		\par Each model input $x$ is a tuple of the features shown in \cref{table:features}. Each model output $y$ is a probability density of functions which map these features to a death increase after $p$ subsequent days.
 		\subsection{Kernel}
 		\subsection{Assumptions}
 	\section{Results}
+	\printbibliography
 \end{document}
